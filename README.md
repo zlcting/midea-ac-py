@@ -5,9 +5,6 @@ It does not read the device's state on initial connection, since for some reason
 Instead, it restores state from home-assistant's previous state.
 This should work okay as long as you only alter the state of your device using home-assisant.
 
-## No more development
-Unfortunately I do not have access to my Midea Air Conditioners as I have relocated to a new house. This means that I cannot reliably support this library due to not being able to test it with real hardware anymore.
-
 Original Readme:
 # midea-ac-py 
 
