@@ -5,8 +5,13 @@ It does not read the device's state on initial connection, since for some reason
 Instead, it restores state from home-assistant's previous state.
 This should work okay as long as you only alter the state of your device using home-assisant.
 
+## Installation
+1. Clone this repo
+1. Place the `midea` folder into your `custom_components` folder
+1. Add configuration to your yaml, as shown here: https://github.com/NeoAcheron/midea-ac-py/wiki/Installing-to-Home-Assistant
+
 Original Readme:
-# midea-ac-py 
+```# midea-ac-py 
 
 This is a library to allow communicating to a Midea AC via the Midea Cloud.
 
@@ -18,3 +23,4 @@ The reasons for me converting this to Python is that this library also serves as
 
 ## Wiki
 Please visit the Wiki for device support and instruction on how to use this component: https://github.com/NeoAcheron/midea-ac-py/wiki 
+```
