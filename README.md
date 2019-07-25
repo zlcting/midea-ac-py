@@ -1,6 +1,14 @@
+Updated home-assistant component for hass version 0.96 and the "climate-1.0" changes.
+
+It does not read the device's state on initial connection, since for some reason the update method causes my device to turn on and be set to fan only mode. (This is a bug to be fixed in [andersonshatch/midea-ac-lib](https://github.com/andersonshatch/midea-ac-lib)... if only I knew how.)
+
+Instead, it restores state from home-assistant's previous state.
+This should work okay as long as you only alter the state of your device using home-assisant.
+
 ## No more development
 Unfortunately I do not have access to my Midea Air Conditioners as I have relocated to a new house. This means that I cannot reliably support this library due to not being able to test it with real hardware anymore.
 
+Original Readme:
 # midea-ac-py 
 
 This is a library to allow communicating to a Midea AC via the Midea Cloud.
@@ -13,6 +21,3 @@ The reasons for me converting this to Python is that this library also serves as
 
 ## Wiki
 Please visit the Wiki for device support and instruction on how to use this component: https://github.com/NeoAcheron/midea-ac-py/wiki 
-
-## No more development
-Unfortunately I do not have access to my Midea Air Conditioners as I have relocated to a new house. This means that I cannot reliably support this library due to not being able to test it with real hardware anymore.
