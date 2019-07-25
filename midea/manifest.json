@@ -2,7 +2,7 @@
         "domain": "midea",
         "name": "Midea Aircon",
         "documentation": "",
-        "requirements": ["git+https://github.com/andersonshatch/midea-ac-lib", "pycryptodome"],
+        "requirements": ["midea-andersonshatch==0.1.10", "pycryptodome"],
         "dependencies": [],
         "codeowners": ["@andersonshatch"]
 }
