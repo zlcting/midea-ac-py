@@ -193,6 +193,7 @@ class MideaClimateACDevice(ClimateDevice, RestoreEntity):
     def target_temperature(self):
         """Return the temperature we try to reach."""
         if self._old_state is not None:
+            self._device.target_temperature = self._old_state.attributes['temperature']
             return self._old_state.attributes['temperature']
 
         return self._device.target_temperature
@@ -201,6 +202,9 @@ class MideaClimateACDevice(ClimateDevice, RestoreEntity):
     def hvac_mode(self):
         """Return current operation ie. heat, cool, idle."""
         if self._old_state is not None:
+            from midea.device import air_conditioning_device as ac
+            self._device.power_state = self._include_off_as_state and self._old_state.state != 'off'
+            self._device.operational_mode = ac.operational_mode_enum[self._old_state.state]
             return self._old_state.state
 
         if self._include_off_as_state and not self._device.power_state:
@@ -211,6 +215,8 @@ class MideaClimateACDevice(ClimateDevice, RestoreEntity):
     def fan_mode(self):
         """Return the fan setting."""
         if self._old_state is not None:
+            from midea.device import air_conditioning_device as ac
+            self._device.fan_speed = ac.fan_speed_enum[self._old_state.attributes['fan_mode']]
             return self._old_state.attributes['fan_mode']
 
         return self._device.fan_speed.name
@@ -219,6 +225,8 @@ class MideaClimateACDevice(ClimateDevice, RestoreEntity):
     def swing_mode(self):
         """Return the swing setting."""
         if self._old_state is not None:
+            from midea.device import air_conditioning_device as ac
+            self._device.swing_mode = ac.swing_mode_enum[self._old_state.attributes['swing_mode']]
             return self._old_state.attributes['swing_mode']
 
         return self._device.swing_mode.name
