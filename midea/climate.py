@@ -204,7 +204,8 @@ class MideaClimateACDevice(ClimateDevice, RestoreEntity):
         if self._old_state is not None:
             from midea.device import air_conditioning_device as ac
             self._device.power_state = self._include_off_as_state and self._old_state.state != 'off'
-            self._device.operational_mode = ac.operational_mode_enum[self._old_state.state]
+            if self._old_state.state != 'off':
+                self._device.operational_mode = ac.operational_mode_enum[self._old_state.state]
             return self._old_state.state
 
         if self._include_off_as_state and not self._device.power_state:
