@@ -19,9 +19,6 @@ from homeassistant.const import CONF_USERNAME, CONF_PASSWORD, TEMP_CELSIUS, \
 
 from homeassistant.helpers.restore_state import RestoreEntity
 
-REQUIREMENTS = ['midea==0.1.7', 'pycryptodome==3.7.0']
-VERSION = '0.1.7'
-
 _LOGGER = logging.getLogger(__name__)
 
 CONF_APP_KEY = 'app_key'
