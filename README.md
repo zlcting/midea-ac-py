@@ -6,8 +6,23 @@ Instead, it restores state from home-assistant's previous state.
 This should work okay as long as you only alter the state of your device using home-assisant.
 
 ## Installation
+
+### HACS [![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/custom-components/hacs)
+1. [Add this repository as a HACS custom repository](https://custom-components.github.io/hacs/usage/settings/#add-custom-repositories).
+
+option | value
+:--- | :---
+|*URL* | https://github.com/andersonshatch/midea-ac-py
+|*Type* | Integration
+
+(store registration is in progress)
+
+2. Install the Midea Aircon component
+3. Add configuration to your yaml, as shown here: https://github.com/NeoAcheron/midea-ac-py/wiki/Installing-to-Home-Assistant
+
+### Manual
 1. Clone this repo
-1. Place the `midea` folder into your `custom_components` folder
+1. Place the `custom_components/midea` folder into your `custom_components` folder
 1. Add configuration to your yaml, as shown here: https://github.com/NeoAcheron/midea-ac-py/wiki/Installing-to-Home-Assistant
 
 Original Readme:
