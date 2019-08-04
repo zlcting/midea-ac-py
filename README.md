@@ -7,16 +7,8 @@ This should work okay as long as you only alter the state of your device using h
 
 ## Installation
 
-### HACS [![hacs_badge](https://img.shields.io/badge/HACS-Custom-orange.svg)](https://github.com/custom-components/hacs)
-1. [Add this repository as a HACS custom repository](https://custom-components.github.io/hacs/usage/settings/#add-custom-repositories).
-
-option | value
-:--- | :---
-|*URL* | https://github.com/andersonshatch/midea-ac-py
-|*Type* | Integration
-
-(store registration is in progress)
-
+### HACS [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
+1. Search the HACS Store for Midea
 2. Install the Midea Aircon component
 3. Add configuration to your yaml, as shown here: https://github.com/NeoAcheron/midea-ac-py/wiki/Installing-to-Home-Assistant
 
