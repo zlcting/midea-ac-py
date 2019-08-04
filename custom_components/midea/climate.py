@@ -2,7 +2,7 @@
 A climate platform that adds support for Midea air conditioning units.
 
 For more details about this platform, please refer to the documentation
-https://github.com/NeoAcheron/midea-ac-py
+https://github.com/andersonshatch/midea-ac-py
 
 This is still early work in progress
 """
