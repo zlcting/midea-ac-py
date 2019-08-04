@@ -24,13 +24,15 @@ _LOGGER = logging.getLogger(__name__)
 CONF_APP_KEY = 'app_key'
 CONF_TEMP_STEP = 'temp_step'
 CONF_INCLUDE_OFF_AS_STATE = 'include_off_as_state'
+CONF_USE_FAN_ONLY_WORKAROUND = 'use_fan_only_workaround'
 
 PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
     vol.Required(CONF_APP_KEY): cv.string,
     vol.Required(CONF_USERNAME): cv.string,
     vol.Required(CONF_PASSWORD): cv.string,
     vol.Optional(CONF_TEMP_STEP, default=1.0): vol.Coerce(float),
-    vol.Optional(CONF_INCLUDE_OFF_AS_STATE, default=True): vol.Coerce(bool)
+    vol.Optional(CONF_INCLUDE_OFF_AS_STATE, default=True): vol.Coerce(bool),
+    vol.Optional(CONF_USE_FAN_ONLY_WORKAROUND, default=False): vol.Coerce(bool)
 })
 
 SUPPORT_FLAGS = SUPPORT_TARGET_TEMPERATURE | SUPPORT_FAN_MODE \
@@ -48,6 +50,7 @@ async def async_setup_platform(hass, config, async_add_entities,
     password = config.get(CONF_PASSWORD)
     temp_step = config.get(CONF_TEMP_STEP)
     include_off_as_state = config.get(CONF_INCLUDE_OFF_AS_STATE)
+    use_fan_only_workaround = config.get(CONF_USE_FAN_ONLY_WORKAROUND)
 
     client = midea_client(app_key, username, password)
     devices = client.devices()
@@ -55,7 +58,8 @@ async def async_setup_platform(hass, config, async_add_entities,
     for device in devices:
         if device.type == 0xAC:
             entities.append(MideaClimateACDevice(
-                hass, device, temp_step, include_off_as_state))
+                hass, device, temp_step, include_off_as_state,
+                use_fan_only_workaround))
         else:
             _LOGGER.error(
                 "Unsupported device type: 0x{:02x}".format(device.type))
@@ -67,7 +71,7 @@ class MideaClimateACDevice(ClimateDevice, RestoreEntity):
     """Representation of a Midea climate AC device."""
 
     def __init__(self, hass, device, temp_step: float,
-                 include_off_as_state: bool):
+                 include_off_as_state: bool, use_fan_only_workaround: bool):
         """Initialize the climate device."""
         from midea.device import air_conditioning_device as ac
 
@@ -81,6 +85,7 @@ class MideaClimateACDevice(ClimateDevice, RestoreEntity):
         self._unit_of_measurement = TEMP_CELSIUS
         self._target_temperature_step = temp_step
         self._include_off_as_state = include_off_as_state
+        self._use_fan_only_workaround = use_fan_only_workaround
 
         self.hass = hass
         self._old_state = None
@@ -100,8 +105,9 @@ class MideaClimateACDevice(ClimateDevice, RestoreEntity):
         if self._changed:
             await self.hass.async_add_executor_job(self._device.apply)
             self._changed = False
-        #else:
-        #await self.hass.async_add_executor_job(self._device.refresh)
+        elif not self._use_fan_only_workaround:
+            self._old_state = None
+            await self.hass.async_add_executor_job(self._device.refresh)
 
     async def async_added_to_hass(self):
         """Run when entity about to be added."""
@@ -148,12 +154,12 @@ class MideaClimateACDevice(ClimateDevice, RestoreEntity):
     @property
     def assumed_state(self):
         """Assume state rather than refresh to workaround fan_only bug."""
-        return True
+        return self._use_fan_only_workaround
 
     @property
     def should_poll(self):
         """Poll the appliance for changes, there is no notification capability in the Midea API"""
-        return False
+        return not self._use_fan_only_workaround
 
     @property
     def unique_id(self):

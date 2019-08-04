@@ -1,10 +1,5 @@
 Updated home-assistant component for hass version 0.96 and the "climate-1.0" changes.
 
-It does not read the device's state on initial connection, since for some reason the update method causes my device to turn on and be set to fan only mode. (This is a bug to be fixed in [andersonshatch/midea-ac-lib](https://github.com/andersonshatch/midea-ac-lib)... if only I knew how.)
-
-Instead, it restores state from home-assistant's previous state.
-This should work okay as long as you only alter the state of your device using home-assisant.
-
 ## Installation
 
 ### HACS [![hacs_badge](https://img.shields.io/badge/HACS-Default-orange.svg)](https://github.com/custom-components/hacs)
@@ -16,6 +11,17 @@ This should work okay as long as you only alter the state of your device using h
 1. Clone this repo
 1. Place the `custom_components/midea` folder into your `custom_components` folder
 1. Add configuration to your yaml, as shown here: https://github.com/NeoAcheron/midea-ac-py/wiki/Installing-to-Home-Assistant
+
+## Fan Only Workaround
+There is an optional workaround to avoid reading the device's state on initial connection, since for some reason the update method causes my device to turn on and be set to fan only mode. (This is a bug to be fixed in [andersonshatch/midea-ac-lib](https://github.com/andersonshatch/midea-ac-lib)... if only I knew how.)
+
+With this workaround enabled, it restores state from home-assistant's previous state.
+This should work okay as long as you only alter the state of your device using home-assisant.
+
+If you find this component turns your device on and to fan_only every time home-assistant updates it (once a minute by default), you probably want to turn on the workaround with this config property:
+```
+use_fan_only_workaround: true
+```
 
 Original Readme:
 ```# midea-ac-py 
