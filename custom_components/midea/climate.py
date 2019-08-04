@@ -133,25 +133,16 @@ class MideaClimateACDevice(ClimateDevice, RestoreEntity):
     @property
     def hvac_modes(self):
         """Return the list of available operation modes."""
-        if self._old_state is not None:
-            return self._old_state.attributes['hvac_modes']
-
         return self._operation_list
 
     @property
     def fan_modes(self):
         """Return the list of available fan modes."""
-        if self._old_state is not None:
-            return self._old_state.attributes['fan_modes']
-
         return self._fan_list
 
     @property
     def swing_modes(self):
         """List of available swing modes."""
-        if self._old_state is not None:
-            return self._old_state.attributes['swing_modes']
-
         return self._swing_list
 
     @property
@@ -182,14 +173,14 @@ class MideaClimateACDevice(ClimateDevice, RestoreEntity):
     def current_temperature(self):
         """Return the current temperature."""
         if self._old_state is not None:
-            return self._old_state.attributes['current_temperature']
+            return self._old_state.attributes.get('current_temperature')
 
         return self._device.indoor_temperature
 
     @property
     def target_temperature(self):
         """Return the temperature we try to reach."""
-        if self._old_state is not None:
+        if self._old_state is not None and 'temperature' in self._old_state.attributes:
             self._device.target_temperature = self._old_state.attributes['temperature']
             return self._old_state.attributes['temperature']
 
@@ -212,7 +203,7 @@ class MideaClimateACDevice(ClimateDevice, RestoreEntity):
     @property
     def fan_mode(self):
         """Return the fan setting."""
-        if self._old_state is not None:
+        if self._old_state is not None and 'fan_mode' in self._old_state.attributes:
             from midea.device import air_conditioning_device as ac
             self._device.fan_speed = ac.fan_speed_enum[self._old_state.attributes['fan_mode']]
             return self._old_state.attributes['fan_mode']
@@ -222,7 +213,7 @@ class MideaClimateACDevice(ClimateDevice, RestoreEntity):
     @property
     def swing_mode(self):
         """Return the swing setting."""
-        if self._old_state is not None:
+        if self._old_state is not None and 'swing_mode' in self._old_state.attributes:
             from midea.device import air_conditioning_device as ac
             self._device.swing_mode = ac.swing_mode_enum[self._old_state.attributes['swing_mode']]
             return self._old_state.attributes['swing_mode']
