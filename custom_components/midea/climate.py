@@ -13,7 +13,8 @@ import voluptuous as vol
 import homeassistant.helpers.config_validation as cv
 from homeassistant.components.climate import ClimateDevice, PLATFORM_SCHEMA
 from homeassistant.components.climate.const import (
-    SUPPORT_TARGET_TEMPERATURE, SUPPORT_FAN_MODE, SUPPORT_SWING_MODE)
+    SUPPORT_TARGET_TEMPERATURE, SUPPORT_FAN_MODE, SUPPORT_SWING_MODE,
+    SUPPORT_PRESET_MODE, PRESET_NONE, PRESET_ECO, PRESET_BOOST)
 from homeassistant.const import CONF_USERNAME, CONF_PASSWORD, TEMP_CELSIUS, \
     ATTR_TEMPERATURE
 
@@ -36,7 +37,7 @@ PLATFORM_SCHEMA = PLATFORM_SCHEMA.extend({
 })
 
 SUPPORT_FLAGS = SUPPORT_TARGET_TEMPERATURE | SUPPORT_FAN_MODE \
-                | SUPPORT_SWING_MODE
+                | SUPPORT_SWING_MODE | SUPPORT_PRESET_MODE
 
 
 async def async_setup_platform(hass, config, async_add_entities,
@@ -227,11 +228,6 @@ class MideaClimateACDevice(ClimateDevice, RestoreEntity):
         return self._device.swing_mode.name
 
     @property
-    def is_away_mode_on(self):
-        """Return if away mode is on."""
-        return self._device.eco_mode
-
-    @property
     def is_on(self):
         """Return true if the device is on."""
         return self._device.power_state
@@ -269,17 +265,43 @@ class MideaClimateACDevice(ClimateDevice, RestoreEntity):
         self._changed = True
         await self.apply_changes()
 
-    async def async_turn_away_mode_on(self):
-        """Turn away mode on."""
-        self._device.eco_mode = True
+    async def async_set_preset_mode(self, preset_mode: str):
+        if preset_mode == PRESET_NONE:
+            self._device.eco_mode = False
+            self._device.turbo_mode = False
+        elif preset_mode == PRESET_BOOST:
+            self._device.eco_mode = False
+            self._device.turbo_mode = True
+        elif preset_mode == PRESET_ECO:
+            self._device.turbo_mode = False
+            self._device.eco_mode = True
+
         self._changed = True
         await self.apply_changes()
 
-    async def async_turn_away_mode_off(self):
-        """Turn away mode off."""
-        self._device.eco_mode = False
-        self._changed = True
-        await self.apply_changes()
+    @property
+    def preset_modes(self):
+        return [PRESET_NONE, PRESET_ECO, PRESET_BOOST]
+
+    @property
+    def preset_mode(self):
+        if self._old_state is not None and 'preset_mode' in self._old_state.attributes:
+            preset_mode = self._old_state.attributes['preset_mode']
+            if preset_mode == PRESET_ECO:
+                self._device.eco_mode = True
+                self._device.turbo_mode = False
+            elif preset_mode == PRESET_BOOST:
+                self._device.turbo_mode = True
+                self._device.eco_mode = False
+
+            return preset_mode
+
+        if self._device.eco_mode:
+            return PRESET_ECO
+        elif self._device.turbo_mode:
+            return PRESET_BOOST
+        else:
+            return PRESET_NONE
 
     async def async_turn_on(self):
         """Turn on."""
