@@ -1,6 +1,6 @@
 Updated home-assistant component for hass version 0.96 and the "climate-1.0" changes.
 
-Last tested with hass version 0.109.x
+Last tested with hass version 0.110.x
 
 ## Installation
 
