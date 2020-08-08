@@ -21,6 +21,7 @@ from homeassistant.components.climate.const import (
     SUPPORT_PRESET_MODE, PRESET_NONE, PRESET_ECO, PRESET_BOOST)
 from homeassistant.const import CONF_USERNAME, CONF_PASSWORD, TEMP_CELSIUS, \
     ATTR_TEMPERATURE
+from homeassistant.exceptions import PlatformNotReady
 
 from homeassistant.helpers.restore_state import RestoreEntity
 
@@ -57,8 +58,11 @@ async def async_setup_platform(hass, config, async_add_entities,
     include_off_as_state = config.get(CONF_INCLUDE_OFF_AS_STATE)
     use_fan_only_workaround = config.get(CONF_USE_FAN_ONLY_WORKAROUND)
 
-    client = midea_client(app_key, username, password)
-    devices = await hass.async_add_executor_job(client.devices)
+    try:
+        client = midea_client(app_key, username, password)
+        devices = await hass.async_add_executor_job(client.devices)
+    except:
+        raise PlatformNotReady
     entities = []
     for device in devices:
         if device.type == 0xAC:
